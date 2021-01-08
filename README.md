@@ -27,7 +27,7 @@ optional arguments:
 #### Saple of the running application
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ryuk-dev75/ETH_price_allert/main/screenshots/1.png?raw=true">
+  <img src="https://github.com/Ryuk-dev75/ETH_price_allert/blob/main/screenshots/1.png?raw=true">
 </p>
 
 
