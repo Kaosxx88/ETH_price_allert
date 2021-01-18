@@ -8,31 +8,42 @@ import argparse
 from datetime import datetime
 
 fiat = 'GBP'
-min_price_default = 800
+min_price_default = 600
 max_price_default = 1200
 
-def eth_price(fiat):	
+def eth_price(fiat):
+	
 
-	url = f'https://api.coinbase.com/v2/prices/ETH-{fiat}/buy'
-	response = requests.get(url)
-	price = (response.json()['data']['amount'])
-	return float(price)
+		url = f'https://api.coinbase.com/v2/prices/ETH-{fiat}/buy'
+		response = requests.get(url)
+		price = float(response.json()['data']['amount'])		
+
+		if type(price) is not float:
+			
+			time.sleep(5)
+			eth_price(fiat)
+
+		else:
+			return price
+
 
 def allert(fiat):
 
-	print ( f'\nDefault allarms values:\n\n Min = {min_price_default} {fiat}\n Max = {max_price_default} {fiat}\n')
+	print ( f'\nDefault allarms values:\n\n Min = {args.low} {fiat}\n Max = {args.high} {fiat}\n')
 
 	while True:
 		now = datetime.now()
-		print (f'{now.strftime("%d/%m %H:%M:%S")} ETH value on www.coinbase.com -> {eth_price(fiat)} {fiat}')
+		price_ETH = eth_price(fiat)
+	
+		print (f'{now.strftime("%d/%m %H:%M:%S")} ETH value -> {price_ETH} {fiat}')
 
-		if eth_price(fiat) >= args.high:
-			print (f'\n\nETH higt price reached {eth_price(fiat)} {fiat}\n\n Time to buy!\n\n')
+		if price_ETH >= args.high:
+			print (f'\n\nETH higt price reached {price_ETH} {fiat}\n\n Time to buy!\n\n')
 
-		elif eth_price(fiat) <= args.low:
-			print (f'\n\nETH lower price reached {eth_price(fiat)} {fiat}\n\n Time to sell!\n\n')
+		elif price_ETH <= args.low:
+			print (f'\n\nETH lower price reached {price_ETH} {fiat}\n\n Time to sell!\n\n')
 
-		time.sleep(10)
+		time.sleep(5)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='ETH Price Allert')
