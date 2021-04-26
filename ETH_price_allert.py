@@ -1,15 +1,19 @@
 # ETH Price Allert (www.coinbase.com price reference)
 # this program check the Ethereum cryptocurrency price and compare it with the lower and higher price input.
-# requests module needed 
+# requests and colorama modules needed 
 
 import time
 import requests
 import argparse
 from datetime import datetime
 
+from colorama import init, Fore, Style
+
+init()
+
 fiat = 'GBP'
 min_price_default = 600
-max_price_default = 1200
+max_price_default = 2000
 
 def eth_price(fiat):
 	
@@ -24,26 +28,33 @@ def eth_price(fiat):
 			eth_price(fiat)
 
 		else:
-			return price
+			return int(price)
 
 
 def allert(fiat):
 
 	print ( f'\nDefault allarms values:\n\n Min = {args.low} {fiat}\n Max = {args.high} {fiat}\n')
 
+	lower  = eth_price(fiat)
+	higher = eth_price(fiat)
+
 	while True:
 		now = datetime.now()
 		price_ETH = eth_price(fiat)
+
+		# updating value lower and higher price
+		if lower > price_ETH : lower = price_ETH
+		if higher < price_ETH : higher = price_ETH
 	
-		print (f'{now.strftime("%d/%m %H:%M:%S")} ETH value -> {price_ETH} {fiat}')
+		print (f'{now.strftime("%H:%M:%S")} ETH {Fore.CYAN + str(price_ETH) + Style.RESET_ALL } {fiat} (↓ {Fore.RED + str(lower) + Style.RESET_ALL } ↑ {Fore.GREEN + str(higher) + Style.RESET_ALL})') 
 
 		if price_ETH >= args.high:
-			print (f'\n\nETH higt price reached {price_ETH} {fiat}\n\n Time to buy!\n\n')
+			print (f'\n\nETH higt price reached {price_ETH} {fiat}\n\n Time to sell!\n\n')
 
 		elif price_ETH <= args.low:
-			print (f'\n\nETH lower price reached {price_ETH} {fiat}\n\n Time to sell!\n\n')
+			print (f'\n\nETH lower price reached {price_ETH} {fiat}\n\n Time to buy!\n\n')
 
-		time.sleep(5)
+		time.sleep(10)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='ETH Price Allert')
